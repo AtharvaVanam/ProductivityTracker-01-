@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>21-Day Challenge Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Celebration Overlay -->
+  <div id="celebration-overlay" class="celebration-overlay hidden">
+    <div class="celebration-content">
+      <div class="celebration-emoji">🔥</div>
+      <h2 class="celebration-title">Day Crushed!</h2>
+      <p class="celebration-sub">All 5 tasks completed. You're unstoppable.</p>
+      <div class="celebration-sparks" id="sparks-container"></div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="reset-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <h3 class="modal-title">Reset Challenge?</h3>
+      <p class="modal-desc">This will erase all progress, streaks, and journal entries. This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="confirm-reset-btn" class="btn btn-danger">Yes, Reset Everything</button>
+        <button id="cancel-reset-btn" class="btn btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">FocusOS</span>
+      </div>
+      <div class="header-right">
+        <div class="date-badge" id="today-date-label"></div>
+        <button id="reset-btn" class="reset-btn" title="Reset Challenge">↺ Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">21-Day Self-Improvement Challenge</p>
+      <h1 class="hero-title">Build the <span class="accent">founder</span><br>you were meant to be.</h1>
+      <p class="hero-sub" id="motivational-quote">Loading your daily fuel...</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Cards Row -->
+  <section class="cards-section">
+    <div class="cards-grid">
+
+      <!-- Today's Progress Card -->
+      <div class="card card--today">
+        <div class="card-label">Today's Progress</div>
+        <div class="card-big-number" id="today-fraction">0/5</div>
+        <div class="card-sub" id="today-percent-label">0% Complete</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="today-progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="card-tasks-preview" id="tasks-mini-preview"></div>
+      </div>
+
+      <!-- 21-Day Challenge Card -->
+      <div class="card card--challenge">
+        <div class="card-label">21-Day Challenge</div>
+        <div class="card-big-number"><span id="current-day-num">1</span><span class="card-big-sub"> / 21</span></div>
+        <div class="card-sub" id="challenge-percent-label">0% Complete</div>
+        <div class="progress-track">
+          <div class="progress-fill progress-fill--blue" id="challenge-progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="card-sub" id="days-remaining-label">20 days remaining</div>
+      </div>
+
+      <!-- Productivity Score Card -->
+      <div class="card card--score">
+        <div class="card-label">Productivity Score</div>
+        <div class="card-big-number" id="productivity-score">0%</div>
+        <div class="card-sub" id="productivity-fraction">0 / 0 tasks</div>
+        <div class="score-ring-wrapper">
+          <svg class="score-ring" viewBox="0 0 80 80">
+            <circle class="score-ring-bg" cx="40" cy="40" r="32" />
+            <circle class="score-ring-fill" id="score-ring-fill" cx="40" cy="40" r="32"
+              stroke-dasharray="201 201" stroke-dashoffset="201" />
+          </svg>
+          <span class="score-ring-inner" id="score-ring-inner-text">0%</span>
+        </div>
+      </div>
+
+      <!-- Streak Card -->
+      <div class="card card--streak">
+        <div class="card-label">Current Streak</div>
+        <div class="card-big-number streak-num" id="current-streak-num">0 <span class="streak-fire">🔥</span></div>
+        <div class="card-sub">days in a row</div>
+        <div class="streak-divider"></div>
+        <div class="card-label" style="margin-top: 0.75rem;">Best Streak</div>
+        <div class="best-streak-num" id="best-streak-num">0 days</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Daily Checklist -->
+  <section class="checklist-section">
+    <div class="section-header">
+      <h2 class="section-title">Daily Tasks</h2>
+      <div class="section-day-badge" id="checklist-day-badge">Day 1</div>
+    </div>
+
+    <div class="tasks-list" id="tasks-list">
+      <!-- Tasks rendered by JS -->
+    </div>
+  </section>
+
+  <!-- Journal Section -->
+  <section class="journal-section">
+    <div class="section-header">
+      <h2 class="section-title">Daily Journal</h2>
+      <div class="save-indicator" id="save-indicator">Auto-saved ✓</div>
+    </div>
+    <div class="journal-wrapper">
+      <textarea
+        id="journal-textarea"
+        class="journal-textarea"
+        placeholder="Write your thoughts, wins, lessons, and plans for tomorrow... This is your founder's log."
+        rows="6"
+      ></textarea>
+    </div>
+  </section>
+
+  <!-- Overall Stats -->
+  <section class="stats-section">
+    <div class="section-header">
+      <h2 class="section-title">Overall Stats</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value" id="stat-completed">0</div>
+        <div class="stat-label">Tasks Done</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-possible">0</div>
+        <div class="stat-label">Total Possible</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-score">0%</div>
+        <div class="stat-label">Score</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-current-streak">0</div>
+        <div class="stat-label">Current Streak</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-best-streak">0</div>
+        <div class="stat-label">Best Streak</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-days-done">0</div>
+        <div class="stat-label">Days Active</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>FocusOS · Your 21-Day Operating System · Built to win.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
